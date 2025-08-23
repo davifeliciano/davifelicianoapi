@@ -1,0 +1,60 @@
+{
+	"info": {
+		"_postman_id": "c405b0d4-6e91-4146-bb3f-c76dc2f5d028",
+		"name": "davifelicianoapi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27356925"
+	},
+	"item": [
+		{
+			"name": "/",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server_url}}/api/boletos",
+					"host": [
+						"{{server_url}}"
+					],
+					"path": [
+						"api",
+						"boletos"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
