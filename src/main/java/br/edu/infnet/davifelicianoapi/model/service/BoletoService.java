@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+
 import br.edu.infnet.davifelicianoapi.model.domain.Boleto;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
 import br.edu.infnet.davifelicianoapi.model.repository.BoletoRepository;
@@ -20,6 +22,7 @@ public class BoletoService implements CrudService<Boleto, Integer> {
     }
 
     @Override
+    @Transactional
     public Boleto incluir(Boleto boleto) throws BoletoInvalidoException {
         if (boleto.getId() != null) {
             throw new BoletoInvalidoException("ID deve ser nulo ao incluir um novo boleto");
@@ -30,6 +33,7 @@ public class BoletoService implements CrudService<Boleto, Integer> {
     }
 
     @Override
+    @Transactional
     public void excluir(Integer id) throws BoletoInexistenteException {
         if (!boletoRepository.existsById(id)) {
             throw new BoletoInexistenteException("Boleto não encontrado com id " + id);
@@ -52,6 +56,7 @@ public class BoletoService implements CrudService<Boleto, Integer> {
     }
 
     @Override
+    @Transactional
     public Boleto alterar(Integer id, Boleto boleto) throws BoletoInexistenteException, BoletoInvalidoException {
         if (!boletoRepository.existsById(id)) {
             throw new BoletoInexistenteException("Boleto não encontrado com id " + id);
