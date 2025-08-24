@@ -9,7 +9,6 @@ import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
 import br.edu.infnet.davifelicianoapi.model.repository.BoletoRepository;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
-import br.edu.infnet.davifelicianoapi.utils.DateValidator;
 
 @Service
 public class BoletoService implements CrudService<Boleto, Integer> {
@@ -20,34 +19,8 @@ public class BoletoService implements CrudService<Boleto, Integer> {
         this.boletoRepository = boletoRepository;
     }
 
-    private void validar(Boleto boleto) throws BoletoInvalidoException {
-        if (boleto == null) {
-            throw new BoletoInvalidoException("Boleto não pode ser nulo");
-        }
-
-        if (boleto.getCodigoDeBarras() == null || boleto.getCodigoDeBarras().isEmpty()) {
-            throw new BoletoInvalidoException("Código de barras é obrigatório");
-        }
-
-        if (boleto.getValor() <= 0) {
-            throw new BoletoInvalidoException("Valor deve ser maior que zero");
-        }
-
-        if (boleto.getDataVencimento() == null) {
-            throw new BoletoInvalidoException("Data de vencimento é obrigatória");
-        }
-
-        if (!DateValidator.isValidDate(boleto.getDataVencimento(), "yyyy-MM-dd")) {
-            throw new BoletoInvalidoException("Data de vencimento inválida: " + boleto.getDataVencimento());
-        }
-
-        // TODO: Adicionar validações de cedente e sacado
-    }
-
     @Override
     public Boleto incluir(Boleto boleto) throws BoletoInvalidoException {
-        validar(boleto);
-
         if (boleto.getId() != null) {
             throw new BoletoInvalidoException("ID deve ser nulo ao incluir um novo boleto");
         }
@@ -84,7 +57,6 @@ public class BoletoService implements CrudService<Boleto, Integer> {
             throw new BoletoInexistenteException("Boleto não encontrado com id " + id);
         }
 
-        validar(boleto);
         boleto.setId(id);
         return boletoRepository.save(boleto);
     }
