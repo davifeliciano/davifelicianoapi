@@ -1,23 +1,24 @@
 package br.edu.infnet.davifelicianoapi.model.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Boleto;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
+import br.edu.infnet.davifelicianoapi.model.repository.BoletoRepository;
+import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
 import br.edu.infnet.davifelicianoapi.utils.DateValidator;
 
 @Service
 public class BoletoService implements CrudService<Boleto, Integer> {
 
-    private final Map<Integer, Boleto> boletos = new ConcurrentHashMap<>();
-    private final AtomicInteger idGenerator = new AtomicInteger(1);
+    private final BoletoRepository boletoRepository;
+
+    public BoletoService(BoletoRepository boletoRepository) {
+        this.boletoRepository = boletoRepository;
+    }
 
     private void validar(Boleto boleto) throws BoletoInvalidoException {
         if (boleto == null) {
@@ -51,52 +52,44 @@ public class BoletoService implements CrudService<Boleto, Integer> {
             throw new BoletoInvalidoException("ID deve ser nulo ao incluir um novo boleto");
         }
 
-        boleto.setId(idGenerator.getAndIncrement());
-        boletos.put(boleto.getId(), boleto);
+        boletoRepository.save(boleto);
         return boleto;
     }
 
     @Override
-    public Boleto excluir(Integer id) throws BoletoJaPagoException {
-        if (!boletos.containsKey(id)) {
-            throw new BoletoJaPagoException("Boleto não encontrado com id " + id);
+    public void excluir(Integer id) throws BoletoInexistenteException {
+        if (!boletoRepository.existsById(id)) {
+            throw new BoletoInexistenteException("Boleto não encontrado com id " + id);
         }
 
-        return boletos.remove(id);
+        boletoRepository.deleteById(id);
     }
 
     @Override
-    public Boleto obterPorId(Integer id) throws BoletoJaPagoException {
-        Boleto boleto = boletos.get(id);
-
-        if (boleto == null) {
-            throw new BoletoJaPagoException("Boleto não encontrado com id " + id);
-        }
+    public Boleto obterPorId(Integer id) throws BoletoInexistenteException {
+        Boleto boleto = boletoRepository.findById(id)
+                .orElseThrow(() -> new BoletoInexistenteException("Boleto não encontrado com id " + id));
 
         return boleto;
     }
 
     @Override
     public List<Boleto> obterTodos() {
-        return new ArrayList<Boleto>(boletos.values());
+        return boletoRepository.findAll();
     }
 
     @Override
-    public Boleto alterar(Integer id, Boleto boleto) throws BoletoJaPagoException, BoletoInvalidoException {
-        if (!boletos.containsKey(id)) {
-            throw new BoletoJaPagoException("Boleto não encontrado com id " + id);
+    public Boleto alterar(Integer id, Boleto boleto) throws BoletoInexistenteException, BoletoInvalidoException {
+        if (!boletoRepository.existsById(id)) {
+            throw new BoletoInexistenteException("Boleto não encontrado com id " + id);
         }
 
         validar(boleto);
         boleto.setId(id);
-        return boletos.put(id, boleto);
+        return boletoRepository.save(boleto);
     }
 
-    public Boleto pagar(Integer id) throws BoletoJaPagoException, BoletoJaPagoException {
-        if (!boletos.containsKey(id)) {
-            throw new BoletoJaPagoException("Boleto não encontrado com id " + id);
-        }
-
+    public Boleto pagar(Integer id) throws BoletoInexistenteException, BoletoJaPagoException {
         Boleto boleto = obterPorId(id);
 
         if (boleto.isPago()) {
@@ -104,8 +97,7 @@ public class BoletoService implements CrudService<Boleto, Integer> {
         }
 
         boleto.setPago(true);
-        boletos.put(id, boleto);
-        return boleto;
+        return boletoRepository.save(boleto);
     }
 
 }

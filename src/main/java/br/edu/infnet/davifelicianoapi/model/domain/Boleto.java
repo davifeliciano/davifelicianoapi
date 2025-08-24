@@ -1,15 +1,33 @@
 package br.edu.infnet.davifelicianoapi.model.domain;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Boleto {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String codigoDeBarras;
     private String nossoNumero;
     private String dataVencimento;
     private double valor;
     private boolean pago;
     private String descricao;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cedente_id")
     private Pessoa cedente;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sacado_id")
     private Pessoa sacado;
 
     public Integer getId() {

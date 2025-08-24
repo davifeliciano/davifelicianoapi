@@ -5,7 +5,7 @@ public interface CrudService<T, ID> {
 
     T alterar(ID id, T entity);
 
-    T excluir(ID id);
+    void excluir(ID id);
 
     T obterPorId(ID id);
 

@@ -110,7 +110,7 @@
 				{
 					"name": "pagar",
 					"request": {
-						"method": "POST",
+						"method": "PATCH",
 						"header": [],
 						"url": {
 							"raw": "{{server_url}}/api/boletos/1/pagar",

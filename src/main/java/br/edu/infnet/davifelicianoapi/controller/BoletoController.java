@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,7 +55,7 @@ public class BoletoController {
     public ResponseEntity<Boleto> incluir(@RequestBody Boleto boleto) {
         try {
             Boleto boletoCriado = boletoService.incluir(boleto);
-            return ResponseEntity.ok(boletoCriado);
+            return ResponseEntity.status(HttpStatus.CREATED).body(boletoCriado);
         } catch (BoletoInvalidoException e) {
             return ResponseEntity.unprocessableEntity().build();
         }
@@ -73,16 +74,16 @@ public class BoletoController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Boleto> excluir(@PathVariable Integer id) {
+    public ResponseEntity<Void> excluir(@PathVariable Integer id) {
         try {
-            Boleto boletoExcluido = boletoService.excluir(id);
-            return ResponseEntity.ok(boletoExcluido);
+            boletoService.excluir(id);
+            return ResponseEntity.noContent().build();
         } catch (BoletoJaPagoException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping(value = "/{id}/pagar")
+    @PatchMapping(value = "/{id}/pagar")
     public ResponseEntity<Boleto> pagar(@PathVariable Integer id) {
         try {
             Boleto boletoPago = boletoService.pagar(id);
