@@ -1,6 +1,7 @@
 package br.edu.infnet.davifelicianoapi.model.domain;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import java.sql.Date;
+
 import org.springframework.format.annotation.NumberFormat;
 
 import jakarta.persistence.CascadeType;
@@ -31,9 +32,8 @@ public class Boleto {
     @NumberFormat(pattern = "\\d{1,20}")
     private String nossoNumero;
 
-    @NotBlank(message = "A data de vencimento é obrigatória")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String dataVencimento;
+    @NotNull(message = "A data de vencimento é obrigatória")
+    private Date dataVencimento;
 
     @NotNull
     @Min(value = 0, message = "O valor deve ser positivo")
@@ -79,12 +79,12 @@ public class Boleto {
         this.nossoNumero = nossoNumero;
     }
 
-    public String getDataVencimento() {
+    public Date getDataVencimento() {
         return dataVencimento;
     }
 
     public void setDataVencimento(String dataVencimento) {
-        this.dataVencimento = dataVencimento;
+        this.dataVencimento = Date.valueOf(dataVencimento);
     }
 
     public double getValor() {
