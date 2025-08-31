@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
+import br.edu.infnet.davifelicianoapi.model.exceptions.PagamentoInexistenteException;
+import br.edu.infnet.davifelicianoapi.model.exceptions.PagamentoInvalidoException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -64,6 +66,28 @@ public class GlobalExceptionHandler {
         errors.put("message", e.getMessage());
 
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(PagamentoInvalidoException.class)
+    public ResponseEntity<Map<String, String>> handlePagamentoInvalidoException(PagamentoInvalidoException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.BAD_REQUEST.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PagamentoInexistenteException.class)
+    public ResponseEntity<Map<String, String>> handlePagamentoInexistenteException(PagamentoInexistenteException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.NOT_FOUND.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
     // Tratamento geral
