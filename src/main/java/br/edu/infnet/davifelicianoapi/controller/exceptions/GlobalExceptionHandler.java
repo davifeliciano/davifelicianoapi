@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
+import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.PagamentoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.PagamentoInvalidoException;
 
@@ -30,6 +31,17 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataInvalidaException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(DataInvalidaException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.BAD_REQUEST.toString());
+        errors.put("message", e.getMessage());
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }

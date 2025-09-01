@@ -3,6 +3,7 @@ package br.edu.infnet.davifelicianoapi.model.dtos;
 import java.sql.Date;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Pagamento;
+import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -30,7 +31,11 @@ public class PagamentoRequestComBoletoIdDTO {
     }
 
     public void setDataPagamento(String dataPagamento) {
-        this.dataPagamento = Date.valueOf(dataPagamento);
+        try {
+            this.dataPagamento = Date.valueOf(dataPagamento);
+        } catch (IllegalArgumentException e) {
+            throw new DataInvalidaException("Data de pagamento inválida. Formato esperado: AAAA-MM-DD");
+        }
     }
 
     public double getValor() {

@@ -2,6 +2,7 @@ package br.edu.infnet.davifelicianoapi.model.domain;
 
 import java.sql.Date;
 
+import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -52,7 +53,11 @@ public class Pagamento {
     }
 
     public void setDataPagamento(String dataPagamento) {
-        this.dataPagamento = Date.valueOf(dataPagamento);
+        try {
+            this.dataPagamento = Date.valueOf(dataPagamento);
+        } catch (IllegalArgumentException e) {
+            throw new DataInvalidaException("Data de pagamento inválida. Formato esperado: AAAA-MM-DD");
+        }
     }
 
     public void setDataPagamento(Date dataPagamento) {

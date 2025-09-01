@@ -4,6 +4,7 @@ import java.sql.Date;
 
 import org.springframework.format.annotation.NumberFormat;
 
+import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -84,7 +85,11 @@ public class Boleto {
     }
 
     public void setDataVencimento(String dataVencimento) {
-        this.dataVencimento = Date.valueOf(dataVencimento);
+        try {
+            this.dataVencimento = Date.valueOf(dataVencimento);
+        } catch (IllegalArgumentException e) {
+            throw new DataInvalidaException("Data de vencimento inválida. Formato esperado: AAAA-MM-DD");
+        }
     }
 
     public double getValor() {
