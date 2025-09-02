@@ -2,6 +2,8 @@ package br.edu.infnet.davifelicianoapi.model.domain;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,7 +23,7 @@ public class Pagamento {
 
     @ManyToOne
     @JoinColumn(name = "boleto_id")
-    @Valid
+    @JsonIgnoreProperties("pagamentos")
     private Boleto boleto;
 
     @NotNull(message = "A data de pagamento é obrigatória")

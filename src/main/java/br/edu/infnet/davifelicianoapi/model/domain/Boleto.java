@@ -1,17 +1,21 @@
 package br.edu.infnet.davifelicianoapi.model.domain;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.format.annotation.NumberFormat;
 
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -55,6 +59,9 @@ public class Boleto {
     @JoinColumn(name = "sacado_id")
     @Valid
     private Pessoa sacado;
+
+    @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 
     public Integer getId() {
         return id;
@@ -130,6 +137,14 @@ public class Boleto {
 
     public void setSacado(Pessoa sacado) {
         this.sacado = sacado;
+    }
+
+    public List<Pagamento> getPagamentos() {
+        return pagamentos;
+    }
+
+    public void setPagamentos(List<Pagamento> pagamentos) {
+        this.pagamentos = pagamentos;
     }
 
     @Override
