@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Boleto;
@@ -34,8 +35,14 @@ public class BoletoController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Boleto>> obterTodos() {
-        List<Boleto> boletos = boletoService.obterTodos();
+    public ResponseEntity<Iterable<Boleto>> obterTodos(@RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        if (from == null && to == null) {
+            List<Boleto> boletos = boletoService.obterTodos();
+            return ResponseEntity.ok(boletos);
+        }
+
+        List<Boleto> boletos = boletoService.obterPorDataVencimento(from, to);
         return ResponseEntity.ok(boletos);
     }
 

@@ -1,5 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.service;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -75,6 +76,26 @@ public class BoletoService implements CrudService<Boleto, Integer> {
 
         boleto.setPago(true);
         return boletoRepository.save(boleto);
+    }
+
+    public List<Boleto> obterPorDataVencimento(String from, String to) {
+        try {
+            if (from == null && to != null) {
+                return boletoRepository.findByDataVencimentoLessThanEqual(Date.valueOf(to));
+            }
+
+            if (from != null && to == null) {
+                return boletoRepository.findByDataVencimentoGreaterThanEqual(Date.valueOf(from));
+            }
+
+            if (from != null && to != null) {
+                return boletoRepository.findByDataVencimentoBetween(Date.valueOf(from), Date.valueOf(to));
+            }
+
+            return boletoRepository.findAll();
+        } catch (IllegalArgumentException e) {
+            throw new BoletoInvalidoException("Datas inválidas. Formato esperado: AAAA-MM-DD");
+        }
     }
 
 }

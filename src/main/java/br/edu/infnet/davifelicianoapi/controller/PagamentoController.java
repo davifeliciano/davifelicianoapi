@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Pagamento;
@@ -31,8 +32,14 @@ public class PagamentoController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Pagamento>> obterTodos() {
-        List<Pagamento> pagamentos = pagamentoService.obterTodos();
+    public ResponseEntity<Iterable<Pagamento>> obterTodos(@RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        if (from == null && to == null) {
+            List<Pagamento> pagamentos = pagamentoService.obterTodos();
+            return ResponseEntity.ok(pagamentos);
+        }
+
+        List<Pagamento> pagamentos = pagamentoService.obterPorDataPagamento(from, to);
         return ResponseEntity.ok(pagamentos);
     }
 

@@ -149,6 +149,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "obterPorVencimento",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/boletos?from=2025-01-01&to=2025-11-30",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"boletos"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "to",
+									"value": "2025-11-30"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
