@@ -4,8 +4,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.format.annotation.NumberFormat;
-
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -20,6 +18,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -30,11 +29,11 @@ public class Boleto {
     private Integer id;
 
     @NotBlank(message = "O código de barras é obrigatório")
-    @NumberFormat(pattern = "\\d{44}")
+    @Pattern(regexp = "\\d{44}")
     private String codigoDeBarras;
 
     @NotBlank(message = "O nosso número é obrigatório")
-    @NumberFormat(pattern = "\\d{1,20}")
+    @Pattern(regexp = "\\d{1,20}")
     private String nossoNumero;
 
     @NotNull(message = "A data de vencimento é obrigatória")

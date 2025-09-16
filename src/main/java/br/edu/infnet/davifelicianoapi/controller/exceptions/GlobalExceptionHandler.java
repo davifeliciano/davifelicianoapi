@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -103,6 +104,18 @@ public class GlobalExceptionHandler {
     }
 
     // Tratamento geral
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(
+            DataIntegrityViolationException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.BAD_REQUEST.toString());
+        errors.put("message", "Violação de integridade de dados: " + e.getRootCause().getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception e) {
         Map<String, String> errors = new HashMap<>();
