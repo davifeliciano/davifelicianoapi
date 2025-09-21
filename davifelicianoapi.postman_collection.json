@@ -108,6 +108,25 @@
 					"response": []
 				},
 				{
+					"name": "excluir",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/boletos/1",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"boletos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "pagar",
 					"request": {
 						"method": "PATCH",
@@ -294,6 +313,159 @@
 							"path": [
 								"api",
 								"pagamentos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obterPorData",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/pagamentos?from=2025-01-01&to=2025-11-30",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"pagamentos"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "to",
+									"value": "2025-11-30"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Encargos",
+			"item": [
+				{
+					"name": "obterTodos",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/encargos",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"encargos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "obterPorId",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/encargos/1",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"encargos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "incluir",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"boletoId\": 1,\r\n    \"multaAtrasoFixa\": 0.0,\r\n    \"multaAtrasoPercentual\": 0.0,\r\n    \"jurosDiarios\": 0.0 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server_url}}/api/encargos",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"encargos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"boletoId\": 1,\r\n    \"multaAtrasoFixa\": 0.0,\r\n    \"multaAtrasoPercentual\": 0.0,\r\n    \"jurosDiarios\": 0.0 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server_url}}/api/boletos/1",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"boletos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "excluir",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/encargos/1",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"encargos",
 								"1"
 							]
 						}

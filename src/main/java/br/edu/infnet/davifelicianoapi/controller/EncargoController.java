@@ -1,0 +1,69 @@
+package br.edu.infnet.davifelicianoapi.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.edu.infnet.davifelicianoapi.model.domain.Encargo;
+import br.edu.infnet.davifelicianoapi.model.dtos.EncargoRequestComBoletoIdDTO;
+import br.edu.infnet.davifelicianoapi.model.service.BoletoService;
+import br.edu.infnet.davifelicianoapi.model.service.EncargoService;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/encargos")
+public class EncargoController {
+
+    private final EncargoService encargoService;
+    private final BoletoService boletoService;
+
+    public EncargoController(EncargoService encargoService, BoletoService boletoService) {
+        this.encargoService = encargoService;
+        this.boletoService = boletoService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Encargo>> obterTodos() {
+        List<Encargo> encargos = encargoService.obterTodos();
+        return ResponseEntity.ok(encargos);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Encargo> obterPorId(@PathVariable Integer id) {
+        Encargo encargo = encargoService.obterPorId(id);
+        return ResponseEntity.ok(encargo);
+    }
+
+    @PostMapping
+    public ResponseEntity<Encargo> incluir(@Valid @RequestBody EncargoRequestComBoletoIdDTO encargoRequest) {
+        Encargo encargo = encargoRequest.toEncargo();
+        encargo.setBoleto(boletoService.obterPorId(encargoRequest.getBoletoId()));
+        Encargo encargoCriado = encargoService.incluir(encargo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(encargoCriado);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Encargo> alterar(@PathVariable Integer id,
+            @Valid @RequestBody EncargoRequestComBoletoIdDTO encargoRequest) {
+        Encargo encargo = encargoRequest.toEncargo();
+        encargo.setBoleto(boletoService.obterPorId(encargoRequest.getBoletoId()));
+        Encargo encargoAtualizado = encargoService.alterar(id, encargo);
+        return ResponseEntity.ok(encargoAtualizado);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable Integer id) {
+        encargoService.excluir(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

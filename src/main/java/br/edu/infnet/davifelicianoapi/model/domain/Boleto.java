@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -60,7 +63,13 @@ public class Boleto {
     private Pessoa sacado;
 
     @OneToMany(mappedBy = "boleto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     List<Pagamento> pagamentos = new ArrayList<Pagamento>();
+
+    @OneToOne(mappedBy = "boleto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "encargo_id")
+    @JsonManagedReference
+    private Encargo encargo;
 
     public Integer getId() {
         return id;
@@ -144,6 +153,14 @@ public class Boleto {
 
     public void setPagamentos(List<Pagamento> pagamentos) {
         this.pagamentos = pagamentos;
+    }
+
+    public Encargo getEncargo() {
+        return encargo;
+    }
+
+    public void setEncargo(Encargo encargo) {
+        this.encargo = encargo;
     }
 
     @Override

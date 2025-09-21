@@ -16,6 +16,8 @@ import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteExceptio
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
+import br.edu.infnet.davifelicianoapi.model.exceptions.EncargoInexistenteException;
+import br.edu.infnet.davifelicianoapi.model.exceptions.EncargoInvalidoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.PagamentoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.PagamentoInvalidoException;
 
@@ -103,6 +105,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EncargoInvalidoException.class)
+    public ResponseEntity<Map<String, String>> handleEncargoInvalidoException(EncargoInvalidoException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.BAD_REQUEST.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EncargoInexistenteException.class)
+    public ResponseEntity<Map<String, String>> handleEncargoInexistenteException(EncargoInexistenteException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.NOT_FOUND.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
     // Tratamento geral
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(
@@ -113,7 +137,7 @@ public class GlobalExceptionHandler {
         errors.put("status", HttpStatus.BAD_REQUEST.toString());
         errors.put("message", "Violação de integridade de dados: " + e.getRootCause().getMessage());
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)

@@ -2,7 +2,7 @@ package br.edu.infnet.davifelicianoapi.model.domain;
 
 import java.sql.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
 import jakarta.persistence.Entity;
@@ -23,7 +23,7 @@ public class Pagamento {
 
     @ManyToOne
     @JoinColumn(name = "boleto_id")
-    @JsonIgnoreProperties("pagamentos")
+    @JsonBackReference
     private Boleto boleto;
 
     @NotNull(message = "A data de pagamento é obrigatória")
@@ -71,6 +71,12 @@ public class Pagamento {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Pagamento(id=%d, boletoId=%s, dataPagamento=%s, valor=%.2f)", id, boleto.getId(),
+                dataPagamento, valor);
     }
 
 }
