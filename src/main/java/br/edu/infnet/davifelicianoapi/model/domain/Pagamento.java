@@ -33,6 +33,14 @@ public class Pagamento {
     @Min(value = 0, message = "O valor deve ser positivo")
     private double valor;
 
+    public Pagamento() {
+    }
+
+    public Pagamento(Date dataPagamento, double valor) {
+        this.dataPagamento = dataPagamento;
+        this.valor = valor;
+    }
+
     public Integer getId() {
         return id;
     }
