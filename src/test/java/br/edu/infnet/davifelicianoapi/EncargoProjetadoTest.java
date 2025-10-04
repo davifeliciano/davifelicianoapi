@@ -3,7 +3,7 @@ package br.edu.infnet.davifelicianoapi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -35,8 +35,8 @@ public class EncargoProjetadoTest {
         assertThrows(EncargoProjetadoInvalidoException.class, () -> {
             EncargoProjetado.builder()
                     .boleto(null)
-                    .vencimentoUtil(Date.valueOf("2025-09-01"))
-                    .dataReferencia(Date.valueOf("2025-09-10"))
+                    .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                    .dataReferencia(LocalDate.parse("2025-09-10"))
                     .build();
         });
     }
@@ -48,7 +48,7 @@ public class EncargoProjetadoTest {
             EncargoProjetado.builder()
                     .boleto(boleto)
                     .vencimentoUtil(null)
-                    .dataReferencia(Date.valueOf("2025-09-10"))
+                    .dataReferencia(LocalDate.parse("2025-09-10"))
                     .build();
         });
     }
@@ -59,7 +59,7 @@ public class EncargoProjetadoTest {
         assertThrows(EncargoProjetadoInvalidoException.class, () -> {
             EncargoProjetado.builder()
                     .boleto(boleto)
-                    .vencimentoUtil(Date.valueOf("2025-09-01"))
+                    .vencimentoUtil(LocalDate.parse("2025-09-01"))
                     .dataReferencia(null)
                     .build();
         });
@@ -73,8 +73,8 @@ public class EncargoProjetadoTest {
         assertThrows(EncargoProjetadoInvalidoException.class, () -> {
             EncargoProjetado.builder()
                     .boleto(boleto)
-                    .vencimentoUtil(Date.valueOf("2025-09-01"))
-                    .dataReferencia(Date.valueOf("2025-09-10"))
+                    .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                    .dataReferencia(LocalDate.parse("2025-09-10"))
                     .build();
         });
     }
@@ -85,8 +85,8 @@ public class EncargoProjetadoTest {
         assertThrows(EncargoProjetadoInvalidoException.class, () -> {
             EncargoProjetado.builder()
                     .boleto(boleto)
-                    .vencimentoUtil(Date.valueOf("2025-09-01"))
-                    .dataReferencia(Date.valueOf("2025-08-31"))
+                    .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                    .dataReferencia(LocalDate.parse("2025-08-31"))
                     .build();
         });
     }
@@ -99,8 +99,8 @@ public class EncargoProjetadoTest {
         assertThrows(EncargoProjetadoInvalidoException.class, () -> {
             EncargoProjetado.builder()
                     .boleto(boleto)
-                    .vencimentoUtil(Date.valueOf("2025-09-01"))
-                    .dataReferencia(Date.valueOf("2025-09-10"))
+                    .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                    .dataReferencia(LocalDate.parse("2025-09-10"))
                     .build();
         });
     }
@@ -110,8 +110,8 @@ public class EncargoProjetadoTest {
     public void deveCalcularDiasAtraso_QuandoReferenciaPosteriorVencimento() {
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-02"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-02"))
                 .build();
 
         assertEquals(1, encargoProjetado.getDiasAtraso());
@@ -122,8 +122,8 @@ public class EncargoProjetadoTest {
     public void deveCalcularDiasAtraso_QuandoReferenciaIgualVencimento() {
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-01"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-01"))
                 .build();
 
         assertEquals(0, encargoProjetado.getDiasAtraso());
@@ -134,13 +134,13 @@ public class EncargoProjetadoTest {
     public void deveCalcularDiasAtraso_QuandoPagoAntesVencimento() {
         boleto.getPagamentos().addAll(
                 Arrays.asList(
-                        new Pagamento(Date.valueOf("2025-08-30"), 400.0),
-                        new Pagamento(Date.valueOf("2025-08-29"), 600.0)));
+                        new Pagamento(LocalDate.parse("2025-08-30"), 400.0),
+                        new Pagamento(LocalDate.parse("2025-08-29"), 600.0)));
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         assertEquals(0, encargoProjetado.getDiasAtraso());
@@ -151,13 +151,13 @@ public class EncargoProjetadoTest {
     public void deveCalcularDiasAtraso_QuandoPagoAposVencimento() {
         boleto.getPagamentos().addAll(
                 Arrays.asList(
-                        new Pagamento(Date.valueOf("2025-09-05"), 400.0),
-                        new Pagamento(Date.valueOf("2025-09-06"), 600.0)));
+                        new Pagamento(LocalDate.parse("2025-09-05"), 400.0),
+                        new Pagamento(LocalDate.parse("2025-09-06"), 600.0)));
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         assertEquals(5, encargoProjetado.getDiasAtraso());
@@ -168,13 +168,13 @@ public class EncargoProjetadoTest {
     public void deveCalcularDiasAtraso_QuandoPagoParcialmenteAposVencimento() {
         boleto.getPagamentos().addAll(
                 Arrays.asList(
-                        new Pagamento(Date.valueOf("2025-09-03"), 400.0),
-                        new Pagamento(Date.valueOf("2025-09-06"), 300.0)));
+                        new Pagamento(LocalDate.parse("2025-09-03"), 400.0),
+                        new Pagamento(LocalDate.parse("2025-09-06"), 300.0)));
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         assertEquals(9, encargoProjetado.getDiasAtraso());
@@ -187,8 +187,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         assertEquals(20.0, encargoProjetado.getMultaAtrasoFixa());
@@ -201,8 +201,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-01"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-01"))
                 .build();
 
         assertEquals(0.0, encargoProjetado.getMultaAtrasoFixa());
@@ -215,8 +215,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         assertEquals(200.0, encargoProjetado.getMultaAtrasoPercentual());
@@ -229,8 +229,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-01"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-01"))
                 .build();
 
         assertEquals(0.0, encargoProjetado.getMultaAtrasoPercentual());
@@ -244,8 +244,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         assertEquals(220.0, encargoProjetado.getTotalMultaAtraso());
@@ -259,8 +259,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         double saldoDividaEsperado = boleto.getValor()
@@ -276,14 +276,14 @@ public class EncargoProjetadoTest {
         boleto.getEncargo().setJurosDiarios(jurosDiarios);
         boleto.getPagamentos().addAll(
                 Arrays.asList(
-                        new Pagamento(Date.valueOf("2025-08-30"), 100.0),
-                        new Pagamento(Date.valueOf("2025-09-03"), 400.0),
-                        new Pagamento(Date.valueOf("2025-09-06"), 300.0)));
+                        new Pagamento(LocalDate.parse("2025-08-30"), 100.0),
+                        new Pagamento(LocalDate.parse("2025-09-03"), 400.0),
+                        new Pagamento(LocalDate.parse("2025-09-06"), 300.0)));
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-10"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-10"))
                 .build();
 
         double saldoDivida = boleto.getValor() - 100.0;
@@ -301,8 +301,8 @@ public class EncargoProjetadoTest {
 
         EncargoProjetado encargoProjetado = EncargoProjetado.builder()
                 .boleto(boleto)
-                .vencimentoUtil(Date.valueOf("2025-09-01"))
-                .dataReferencia(Date.valueOf("2025-09-01"))
+                .vencimentoUtil(LocalDate.parse("2025-09-01"))
+                .dataReferencia(LocalDate.parse("2025-09-01"))
                 .build();
 
         assertEquals(boleto.getValor(), encargoProjetado.getSaldoDivida());

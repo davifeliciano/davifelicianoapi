@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.service;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Boleto;
+import br.edu.infnet.davifelicianoapi.model.domain.EncargoProjetado;
+import br.edu.infnet.davifelicianoapi.model.domain.Feriado;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
 import br.edu.infnet.davifelicianoapi.model.repository.BoletoRepository;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteException;
@@ -17,9 +19,11 @@ import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
 public class BoletoService implements CrudService<Boleto, Integer> {
 
     private final BoletoRepository boletoRepository;
+    private final FeriadoService feriadoService;
 
-    public BoletoService(BoletoRepository boletoRepository) {
+    public BoletoService(BoletoRepository boletoRepository, FeriadoService feriadoService) {
         this.boletoRepository = boletoRepository;
+        this.feriadoService = feriadoService;
     }
 
     @Override
@@ -81,21 +85,55 @@ public class BoletoService implements CrudService<Boleto, Integer> {
     public List<Boleto> obterPorDataVencimento(String from, String to) {
         try {
             if (from == null && to != null) {
-                return boletoRepository.findByDataVencimentoLessThanEqual(Date.valueOf(to));
+                return boletoRepository.findByDataVencimentoLessThanEqual(LocalDate.parse(to));
             }
 
             if (from != null && to == null) {
-                return boletoRepository.findByDataVencimentoGreaterThanEqual(Date.valueOf(from));
+                return boletoRepository.findByDataVencimentoGreaterThanEqual(LocalDate.parse(from));
             }
 
             if (from != null && to != null) {
-                return boletoRepository.findByDataVencimentoBetween(Date.valueOf(from), Date.valueOf(to));
+                return boletoRepository.findByDataVencimentoBetween(LocalDate.parse(from), LocalDate.parse(to));
             }
 
             return boletoRepository.findAll();
         } catch (IllegalArgumentException e) {
             throw new BoletoInvalidoException("Datas inválidas. Formato esperado: AAAA-MM-DD");
         }
+    }
+
+    private static boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek().getValue() >= 6;
+    }
+
+    private static boolean isFeriado(LocalDate date, List<Feriado> feriados) {
+        for (Feriado feriado : feriados) {
+            if (feriado.getData().isEqual(date)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public EncargoProjetado calcularEncargosProjetadosPorId(Integer id) {
+        Boleto boleto = obterPorId(id);
+        String ano = Integer.toString(boleto.getDataVencimento().getYear());
+        List<Feriado> feriados = feriadoService.obterFeriados(ano);
+
+        LocalDate vencimentoUtil = boleto.getDataVencimento();
+        boolean isFeriado = isFeriado(vencimentoUtil, feriados);
+        boolean isWeekend = isWeekend(vencimentoUtil);
+
+        while (isWeekend || isFeriado) {
+            vencimentoUtil = vencimentoUtil.plusDays(1);
+            isFeriado = isFeriado(vencimentoUtil, feriados);
+            isWeekend = isWeekend(vencimentoUtil);
+        }
+
+        return EncargoProjetado.builder().boleto(boleto).vencimentoUtil(vencimentoUtil)
+                .dataReferencia(LocalDate.now()).build();
+
     }
 
 }

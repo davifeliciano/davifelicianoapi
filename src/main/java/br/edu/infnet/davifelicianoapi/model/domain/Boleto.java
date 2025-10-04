@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.domain;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class Boleto {
     private String nossoNumero;
 
     @NotNull(message = "A data de vencimento é obrigatória")
-    private Date dataVencimento;
+    private LocalDate dataVencimento;
 
     @NotNull
     @Min(value = 0, message = "O valor deve ser positivo")
@@ -95,13 +95,13 @@ public class Boleto {
         this.nossoNumero = nossoNumero;
     }
 
-    public Date getDataVencimento() {
+    public LocalDate getDataVencimento() {
         return dataVencimento;
     }
 
     public void setDataVencimento(String dataVencimento) {
         try {
-            this.dataVencimento = Date.valueOf(dataVencimento);
+            this.dataVencimento = LocalDate.parse(dataVencimento);
         } catch (IllegalArgumentException e) {
             throw new DataInvalidaException("Data de vencimento inválida. Formato esperado: AAAA-MM-DD");
         }

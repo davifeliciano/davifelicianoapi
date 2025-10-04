@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.dtos;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Pagamento;
 import br.edu.infnet.davifelicianoapi.model.exceptions.DataInvalidaException;
@@ -12,7 +12,7 @@ public class PagamentoRequestComBoletoIdDTO {
     private Integer boletoId;
 
     @NotNull(message = "A data de pagamento é obrigatória")
-    private Date dataPagamento;
+    private LocalDate dataPagamento;
 
     @NotNull
     @Min(value = 0, message = "O valor deve ser positivo")
@@ -26,13 +26,13 @@ public class PagamentoRequestComBoletoIdDTO {
         this.boletoId = boletoId;
     }
 
-    public Date getDataPagamento() {
+    public LocalDate getDataPagamento() {
         return dataPagamento;
     }
 
     public void setDataPagamento(String dataPagamento) {
         try {
-            this.dataPagamento = Date.valueOf(dataPagamento);
+            this.dataPagamento = LocalDate.parse(dataPagamento);
         } catch (IllegalArgumentException e) {
             throw new DataInvalidaException("Data de pagamento inválida. Formato esperado: AAAA-MM-DD");
         }

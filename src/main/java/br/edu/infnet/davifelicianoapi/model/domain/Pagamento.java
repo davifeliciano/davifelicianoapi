@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.domain;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -27,7 +27,7 @@ public class Pagamento {
     private Boleto boleto;
 
     @NotNull(message = "A data de pagamento é obrigatória")
-    private Date dataPagamento;
+    private LocalDate dataPagamento;
 
     @NotNull
     @Min(value = 0, message = "O valor deve ser positivo")
@@ -36,7 +36,7 @@ public class Pagamento {
     public Pagamento() {
     }
 
-    public Pagamento(Date dataPagamento, double valor) {
+    public Pagamento(LocalDate dataPagamento, double valor) {
         this.dataPagamento = dataPagamento;
         this.valor = valor;
     }
@@ -57,19 +57,19 @@ public class Pagamento {
         this.boleto = boleto;
     }
 
-    public Date getDataPagamento() {
+    public LocalDate getDataPagamento() {
         return dataPagamento;
     }
 
     public void setDataPagamento(String dataPagamento) {
         try {
-            this.dataPagamento = Date.valueOf(dataPagamento);
+            this.dataPagamento = LocalDate.parse(dataPagamento);
         } catch (IllegalArgumentException e) {
             throw new DataInvalidaException("Data de pagamento inválida. Formato esperado: AAAA-MM-DD");
         }
     }
 
-    public void setDataPagamento(Date dataPagamento) {
+    public void setDataPagamento(LocalDate dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 

@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.service;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -80,15 +80,15 @@ public class PagamentoService implements CrudService<Pagamento, Integer> {
     public List<Pagamento> obterPorDataPagamento(String from, String to) {
         try {
             if (from == null && to != null) {
-                return pagamentoRepository.findByDataPagamentoLessThanEqual(Date.valueOf(to));
+                return pagamentoRepository.findByDataPagamentoLessThanEqual(LocalDate.parse(to));
             }
 
             if (from != null && to == null) {
-                return pagamentoRepository.findByDataPagamentoGreaterThanEqual(Date.valueOf(from));
+                return pagamentoRepository.findByDataPagamentoGreaterThanEqual(LocalDate.parse(from));
             }
 
             if (from != null && to != null) {
-                return pagamentoRepository.findByDataPagamentoBetween(Date.valueOf(from), Date.valueOf(to));
+                return pagamentoRepository.findByDataPagamentoBetween(LocalDate.parse(from), LocalDate.parse(to));
             }
 
             return pagamentoRepository.findAll();

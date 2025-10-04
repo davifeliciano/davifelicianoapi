@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.repository;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.annotations.processing.Find;
@@ -16,12 +16,12 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Integer> {
     List<Pagamento> findByBoletoId(Integer boletoId);
 
     @Find
-    List<Pagamento> findByDataPagamentoBetween(Date valueOf, Date valueOf2);
+    List<Pagamento> findByDataPagamentoBetween(LocalDate valueOf, LocalDate valueOf2);
 
     @Find
-    List<Pagamento> findByDataPagamentoGreaterThanEqual(Date valueOf);
+    List<Pagamento> findByDataPagamentoGreaterThanEqual(LocalDate valueOf);
 
     @Find
-    List<Pagamento> findByDataPagamentoLessThanEqual(Date valueOf);
+    List<Pagamento> findByDataPagamentoLessThanEqual(LocalDate valueOf);
 
 }

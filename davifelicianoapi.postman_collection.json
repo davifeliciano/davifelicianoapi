@@ -199,6 +199,29 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "obterEncargosProjetados",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/boletos/1/encargos",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"boletos",
+								"1",
+								"encargos"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -405,7 +428,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"boletoId\": 1,\r\n    \"multaAtrasoFixa\": 0.0,\r\n    \"multaAtrasoPercentual\": 0.0,\r\n    \"jurosDiarios\": 0.0 \r\n}",
+							"raw": "{\r\n    \"boletoId\": 1,\r\n    \"multaAtrasoFixa\": 10.0,\r\n    \"multaAtrasoPercentual\": 0.0,\r\n    \"jurosDiarios\": 0.01 \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -467,6 +490,30 @@
 								"api",
 								"encargos",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Feriados",
+			"item": [
+				{
+					"name": "obterPorAno",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server_url}}/api/feriados/2025",
+							"host": [
+								"{{server_url}}"
+							],
+							"path": [
+								"api",
+								"feriados",
+								"2025"
 							]
 						}
 					},

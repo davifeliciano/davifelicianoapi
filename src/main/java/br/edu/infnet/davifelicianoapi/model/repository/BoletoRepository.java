@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.repository;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.annotations.processing.Find;
@@ -13,12 +13,12 @@ import br.edu.infnet.davifelicianoapi.model.domain.Boleto;
 public interface BoletoRepository extends JpaRepository<Boleto, Integer> {
 
     @Find
-    List<Boleto> findByDataVencimentoBetween(Date valueOf, Date valueOf2);
+    List<Boleto> findByDataVencimentoBetween(LocalDate valueOf, LocalDate valueOf2);
 
     @Find
-    List<Boleto> findByDataVencimentoGreaterThanEqual(Date valueOf);
+    List<Boleto> findByDataVencimentoGreaterThanEqual(LocalDate valueOf);
 
     @Find
-    List<Boleto> findByDataVencimentoLessThanEqual(Date valueOf);
+    List<Boleto> findByDataVencimentoLessThanEqual(LocalDate valueOf);
 
 }

@@ -1,6 +1,6 @@
 package br.edu.infnet.davifelicianoapi.model.domain;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
@@ -9,8 +9,8 @@ import br.edu.infnet.davifelicianoapi.controller.exceptions.EncargoProjetadoInva
 public class EncargoProjetado {
 
     private final Boleto boleto;
-    private final Date vencimentoUtil;
-    private final Date dataReferencia;
+    private final LocalDate vencimentoUtil;
+    private final LocalDate dataReferencia;
     private int diasAtraso;
     private double saldoDivida;
     private double multaAtrasoFixa;
@@ -29,20 +29,20 @@ public class EncargoProjetado {
 
     public static class Builder {
         private Boleto boleto;
-        private Date vencimentoUtil;
-        private Date dataReferencia;
+        private LocalDate vencimentoUtil;
+        private LocalDate dataReferencia;
 
         public Builder boleto(Boleto boleto) {
             this.boleto = boleto;
             return this;
         }
 
-        public Builder vencimentoUtil(Date vencimentoUtil) {
+        public Builder vencimentoUtil(LocalDate vencimentoUtil) {
             this.vencimentoUtil = vencimentoUtil;
             return this;
         }
 
-        public Builder dataReferencia(Date dataReferencia) {
+        public Builder dataReferencia(LocalDate dataReferencia) {
             this.dataReferencia = dataReferencia;
             return this;
         }
@@ -60,11 +60,11 @@ public class EncargoProjetado {
         return boleto;
     }
 
-    public Date getVencimentoUtil() {
+    public LocalDate getVencimentoUtil() {
         return vencimentoUtil;
     }
 
-    public Date getDataReferencia() {
+    public LocalDate getDataReferencia() {
         return dataReferencia;
     }
 
@@ -94,15 +94,17 @@ public class EncargoProjetado {
 
     private void ordenarPagamentosAposVencimento() {
         pagamentosAposVencimento = boleto.getPagamentos().stream()
-                .filter(p -> p.getDataPagamento().after(vencimentoUtil)
-                        && (p.getDataPagamento().before(dataReferencia) || p.getDataPagamento().equals(dataReferencia)))
+                .filter(p -> p.getDataPagamento().isAfter(vencimentoUtil)
+                        && (p.getDataPagamento().isBefore(dataReferencia)
+                                || p.getDataPagamento().equals(dataReferencia)))
                 .sorted((p1, p2) -> p1.getDataPagamento().compareTo(p2.getDataPagamento()))
                 .toList();
     }
 
     private void calcularSaldoDividaInicial() {
         saldoDivida = boleto.getValor() - boleto.getPagamentos().stream()
-                .filter(p -> p.getDataPagamento().before(vencimentoUtil) || p.getDataPagamento().equals(vencimentoUtil))
+                .filter(p -> p.getDataPagamento().isBefore(vencimentoUtil)
+                        || p.getDataPagamento().equals(vencimentoUtil))
                 .reduce(0.0, (subtotal, pagamento) -> subtotal + pagamento.getValor(), Double::sum);
     }
 
@@ -111,7 +113,7 @@ public class EncargoProjetado {
             return;
         }
 
-        Date dataFinal = dataReferencia;
+        LocalDate dataFinal = dataReferencia;
         double somaPagamentos = 0.0;
 
         for (Pagamento pagamento : pagamentosAposVencimento) {
@@ -123,7 +125,7 @@ public class EncargoProjetado {
             }
         }
 
-        diasAtraso = Period.between(vencimentoUtil.toLocalDate(), dataFinal.toLocalDate()).getDays();
+        diasAtraso = Period.between(vencimentoUtil, dataFinal).getDays();
     }
 
     private void calcularMultaAtrasoPercentual() {
@@ -144,14 +146,15 @@ public class EncargoProjetado {
 
     private void calcularSaldoDivida() {
         saldoDivida = boleto.getValor() - boleto.getPagamentos().stream()
-                .filter(p -> p.getDataPagamento().before(vencimentoUtil) || p.getDataPagamento().equals(vencimentoUtil))
+                .filter(p -> p.getDataPagamento().isBefore(vencimentoUtil)
+                        || p.getDataPagamento().equals(vencimentoUtil))
                 .reduce(0.0, (subtotal, pagamento) -> subtotal + pagamento.getValor(), Double::sum);
 
-        Date dataInicio = vencimentoUtil;
+        LocalDate dataInicio = vencimentoUtil;
 
         for (Pagamento pagamento : pagamentosAposVencimento) {
             int diasAtrasoPagamento = Period
-                    .between(dataInicio.toLocalDate(), pagamento.getDataPagamento().toLocalDate()).getDays();
+                    .between(dataInicio, pagamento.getDataPagamento()).getDays();
 
             saldoDivida = saldoDivida * Math.pow((1.0 + boleto.getEncargo().getJurosDiarios()), diasAtrasoPagamento);
             saldoDivida -= pagamento.getValor();
@@ -159,7 +162,7 @@ public class EncargoProjetado {
         }
 
         int diasAtrasoDesdeUltimoPagamento = Period
-                .between(dataInicio.toLocalDate(), dataReferencia.toLocalDate()).getDays();
+                .between(dataInicio, dataReferencia).getDays();
 
         saldoDivida = saldoDivida
                 * Math.pow((1.0 + boleto.getEncargo().getJurosDiarios()), diasAtrasoDesdeUltimoPagamento);
@@ -186,11 +189,11 @@ public class EncargoProjetado {
             throw new EncargoProjetadoInvalidoException("Encargo do boleto não deve ser nulo");
         }
 
-        if (dataReferencia.before(vencimentoUtil)) {
+        if (dataReferencia.isBefore(vencimentoUtil)) {
             throw new EncargoProjetadoInvalidoException("Data de referência não deve ser anterior ao vencimento útil");
         }
 
-        if (vencimentoUtil.before(boleto.getDataVencimento())) {
+        if (vencimentoUtil.isBefore(boleto.getDataVencimento())) {
             throw new EncargoProjetadoInvalidoException(
                     "Vencimento útil não deve ser anterior ao vencimento do boleto");
         }

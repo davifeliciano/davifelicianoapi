@@ -139,6 +139,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EncargoProjetadoInvalidoException.class)
+    public ResponseEntity<Map<String, String>> handleEncargoProjetadoInvalidoException(
+            EncargoProjetadoInvalidoException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.BAD_REQUEST.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
     // Tratamento geral
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(

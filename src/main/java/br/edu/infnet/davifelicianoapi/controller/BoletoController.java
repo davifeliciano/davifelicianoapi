@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.infnet.davifelicianoapi.model.domain.Boleto;
+import br.edu.infnet.davifelicianoapi.model.domain.EncargoProjetado;
 import br.edu.infnet.davifelicianoapi.model.domain.Pagamento;
 import br.edu.infnet.davifelicianoapi.model.dtos.PagamentoResponseSemBoletoDTO;
 import br.edu.infnet.davifelicianoapi.model.service.BoletoService;
@@ -84,6 +85,12 @@ public class BoletoController {
                 .toList();
 
         return ResponseEntity.ok(pagamentosSemBoleto);
+    }
+
+    @GetMapping(value = "/{id}/encargos")
+    public ResponseEntity<EncargoProjetado> obterEncargosProjetados(@PathVariable Integer id) {
+        EncargoProjetado encargoProjetado = boletoService.calcularEncargosProjetadosPorId(id);
+        return ResponseEntity.ok(encargoProjetado);
     }
 
 }
