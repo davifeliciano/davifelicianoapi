@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import br.edu.infnet.davifelicianoapi.model.exceptions.AnoInvalidoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInexistenteException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoInvalidoException;
 import br.edu.infnet.davifelicianoapi.model.exceptions.BoletoJaPagoException;
@@ -127,6 +128,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AnoInvalidoException.class)
+    public ResponseEntity<Map<String, String>> handleAnoInvalidoException(AnoInvalidoException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.BAD_REQUEST.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
     // Tratamento geral
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, String>> handleDataIntegrityViolationException(
@@ -135,7 +147,7 @@ public class GlobalExceptionHandler {
 
         errors.put("time", LocalDateTime.now().toString());
         errors.put("status", HttpStatus.BAD_REQUEST.toString());
-        errors.put("message", "Violação de integridade de dados: " + e.getRootCause().getMessage());
+        errors.put("message", "Violação de integridade de dados: provavelmente chave duplicada.");
 
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
