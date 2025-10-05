@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,6 +37,7 @@ public class BoletoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Iterable<Boleto>> obterTodos(@RequestParam(required = false) String from,
             @RequestParam(required = false) String to) {
         if (from == null && to == null) {
@@ -48,36 +50,42 @@ public class BoletoController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Boleto> obterPorId(@PathVariable Integer id) {
         Boleto boleto = boletoService.obterPorId(id);
         return ResponseEntity.ok(boleto);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boleto> incluir(@Valid @RequestBody Boleto boleto) {
         Boleto boletoCriado = boletoService.incluir(boleto);
         return ResponseEntity.status(HttpStatus.CREATED).body(boletoCriado);
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boleto> alterar(@PathVariable Integer id, @Valid @RequestBody Boleto boleto) {
         Boleto boletoAtualizado = boletoService.alterar(id, boleto);
         return ResponseEntity.ok(boletoAtualizado);
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> excluir(@PathVariable Integer id) {
         boletoService.excluir(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping(value = "/{id}/pagar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Boleto> pagar(@PathVariable Integer id) {
         Boleto boletoPago = boletoService.pagar(id);
         return ResponseEntity.ok(boletoPago);
     }
 
     @GetMapping(value = "/{id}/pagamentos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<PagamentoResponseSemBoletoDTO>> obterPagamentos(@PathVariable Integer id) {
         List<Pagamento> pagamentos = pagamentoService.obterPorBoletoId(id);
         List<PagamentoResponseSemBoletoDTO> pagamentosSemBoleto = pagamentos.stream()
@@ -88,6 +96,7 @@ public class BoletoController {
     }
 
     @GetMapping(value = "/{id}/encargos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<EncargoProjetado> obterEncargosProjetados(@PathVariable Integer id) {
         EncargoProjetado encargoProjetado = boletoService.calcularEncargosProjetadosPorId(id);
         return ResponseEntity.ok(encargoProjetado);

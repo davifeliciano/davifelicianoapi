@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -149,6 +150,18 @@ public class GlobalExceptionHandler {
         errors.put("message", e.getMessage());
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> handleAccessDeniedException(
+            AccessDeniedException e) {
+        Map<String, String> errors = new HashMap<>();
+
+        errors.put("time", LocalDateTime.now().toString());
+        errors.put("status", HttpStatus.FORBIDDEN.toString());
+        errors.put("message", e.getMessage());
+
+        return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
     }
 
     // Tratamento geral

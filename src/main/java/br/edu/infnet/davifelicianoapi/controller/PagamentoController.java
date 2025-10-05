@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class PagamentoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Iterable<Pagamento>> obterTodos(@RequestParam(required = false) String from,
             @RequestParam(required = false) String to) {
         if (from == null && to == null) {
@@ -44,12 +46,14 @@ public class PagamentoController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Pagamento> obterPorId(@PathVariable Integer id) {
         Pagamento pagamento = pagamentoService.obterPorId(id);
         return ResponseEntity.ok(pagamento);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Pagamento> incluir(@Valid @RequestBody PagamentoRequestComBoletoIdDTO pagamentoRequest) {
         Pagamento pagamento = pagamentoRequest.toPagamento();
         pagamento.setBoleto(boletoService.obterPorId(pagamentoRequest.getBoletoId()));
@@ -58,6 +62,7 @@ public class PagamentoController {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Pagamento> alterar(@PathVariable Integer id,
             @Valid @RequestBody PagamentoRequestComBoletoIdDTO pagamentoRequest) {
         Pagamento pagamento = pagamentoRequest.toPagamento();
@@ -67,6 +72,7 @@ public class PagamentoController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> excluir(@PathVariable Integer id) {
         pagamentoService.excluir(id);
         return ResponseEntity.noContent().build();

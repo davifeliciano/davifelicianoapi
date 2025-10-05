@@ -12,9 +12,6 @@
 				{
 					"name": "obterTodos",
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -522,12 +519,28 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{userPassword}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "user",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -538,6 +551,7 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -547,8 +561,15 @@
 	"variable": [
 		{
 			"key": "server_url",
-			"value": "http://localhost:8080",
-			"type": "string"
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "adminPassword",
+			"value": "admin"
+		},
+		{
+			"key": "userPassword",
+			"value": "user"
 		}
 	]
 }
