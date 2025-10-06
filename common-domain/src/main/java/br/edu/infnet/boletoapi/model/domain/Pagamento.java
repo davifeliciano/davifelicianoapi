@@ -1,0 +1,90 @@
+package br.edu.infnet.boletoapi.model.domain;
+
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import br.edu.infnet.boletoapi.model.domain.exceptions.DataInvalidaException;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
+@Entity
+public class Pagamento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "boleto_id")
+    @JsonBackReference
+    private Boleto boleto;
+
+    @NotNull(message = "A data de pagamento é obrigatória")
+    private LocalDate dataPagamento;
+
+    @NotNull
+    @Min(value = 0, message = "O valor deve ser positivo")
+    private double valor;
+
+    public Pagamento() {
+    }
+
+    public Pagamento(LocalDate dataPagamento, double valor) {
+        this.dataPagamento = dataPagamento;
+        this.valor = valor;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Boleto getBoleto() {
+        return boleto;
+    }
+
+    public void setBoleto(Boleto boleto) {
+        this.boleto = boleto;
+    }
+
+    public LocalDate getDataPagamento() {
+        return dataPagamento;
+    }
+
+    public void setDataPagamento(String dataPagamento) {
+        try {
+            this.dataPagamento = LocalDate.parse(dataPagamento);
+        } catch (IllegalArgumentException e) {
+            throw new DataInvalidaException("Data de pagamento inválida. Formato esperado: AAAA-MM-DD");
+        }
+    }
+
+    public void setDataPagamento(LocalDate dataPagamento) {
+        this.dataPagamento = dataPagamento;
+    }
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Pagamento(id=%d, boletoId=%s, dataPagamento=%s, valor=%.2f)", id, boleto.getId(),
+                dataPagamento, valor);
+    }
+
+}
